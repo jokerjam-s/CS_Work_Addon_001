@@ -28,7 +28,7 @@ string InputPassword(string message)
 // возврат:
 //      true - пароли совпадают
 //      false - пароли не совпадают
-bool passwordCheck(string password)
+bool PasswordCheck(string password)
 {
     return password == userPassword;
 }
@@ -43,7 +43,7 @@ Console.Clear();
 while (countEnter < maxCountEnter && closeSecret)
 {
     password = InputPassword($"Input password ({maxCountEnter - countEnter} time(s) left): ");
-    if (passwordCheck(password))
+    if (PasswordCheck(password))
     {
         closeSecret = false;
     }
