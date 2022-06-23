@@ -28,20 +28,24 @@ bool CommandExit(string userWord)
     bool result = false;
 
     if (userWord.ToLower() == exitWord.ToLower())
+    {
         result = true;
+    }
 
     return result;
 }
 
 // main body
-bool runApp = true;     // признак выполнения прграммы
 string command;         // пользовательский ввод
 
 Console.Clear();
 
-while (runApp)
+while (true)            // работаем бесконечно
 {
     command = InputCommand("Input command: ");
-    runApp = !CommandExit(command);
+    if (CommandExit(command))
+    {
+        break;
+    }
 }
 
