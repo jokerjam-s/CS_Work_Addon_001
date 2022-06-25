@@ -1,17 +1,16 @@
-﻿/*
-* Задача 2
-  v 0.0 Есть программа с бесконечным циклом. Когда пользователь вводит exit программа заканчивается
+﻿/**
+*  Задача 2
+*  v 0.0 Есть программа с бесконечным циклом. Когда пользователь вводит exit программа заканчивается
 
-  todo: v 0.1 Продолжаем прокачивать приложение с командами. Добавить к программе, которая заканчивается, 
-    когда пишем exit еще 4 команды (их можно придумать самому). 
-    Например: 
-        SetName – Установить имя 
-        Help – вывести список команд 
-        SetPassword – Установить пароль 
-        Exit – выход 
-        WriteName – вывести имя после ввода пароля
+*  todo: v 0.1 Продолжаем прокачивать приложение с командами. Добавить к программе, которая заканчивается, 
+*    когда пишем exit еще 4 команды (их можно придумать самому). 
+*    Например: 
+*        SetName – Установить имя 
+*        Help – вывести список команд 
+*        SetPassword – Установить пароль 
+*        Exit – выход 
+*        WriteName – вывести имя после ввода пароля
 */
-
 
 
 // возможные команды
@@ -65,13 +64,14 @@ void PrintHelp()
 // вызывает соответсвтвующий обработчик, возвращает признак завершения приложения
 // параметры:
 //      userWord - введенная пользователем команда
+//      userData - пользовательские данные
 // возврат:
 //      true - завершение программы
 //      false - продолжение работы
-bool CommandProcessor(string userWord)
+bool CommandProcessor(string userWord, string[] userData)
 {
     bool canExit = false;
-    string[] command = userWord.Split(' '); 
+    string[] command = userWord.Split(' ');
 
     if (command.Length == 0)
     {
@@ -81,25 +81,29 @@ bool CommandProcessor(string userWord)
 
     // команду в нижний регистр, избавляемся от лишних ToLover в проверках
     command[0] = command[0].ToLower();
-    if(command.Length > 1)
+    if (command.Length > 1)
         command[1] = command[1].ToLower();
 
-    
-    if(command[0] == "help"){
+
+    if (command[0] == "help")
+    {
         PrintHelp();
     }
-    else if(command[0] == "exit")
+    else if (command[0] == "exit")
     {
         canExit = true;
     }
-    else if(command.Length <2 ){
+    else if (command.Length < 2)
+    {
         ShowMsg("Wrong command format!\nUse help command for information.");
     }
-    else if(command[0] == "get" && command[1] == "name"){
+    else if (command[0] == "get" && command[1] == "name")
+    {
         // todo вызов отображения именни пользователя
     }
-    else if(command[0] == "set" && command[1] == "name"){
-        if(command.Length > 2)
+    else if (command[0] == "set" && command[1] == "name")
+    {
+        if (command.Length > 2)
         {
             // todo вызов ввода имевни с заданным параметром
         }
@@ -108,17 +112,49 @@ bool CommandProcessor(string userWord)
             // todo вызов задания имени с запросом параметра
         }
     }
-    else if(command[0] == "set" && command[1] == "password"){
-        // todo запрос пароля
+    else if (command[0] == "set" && command[1] == "password")
+    {
+        SetPassword(userData);
     }
-    else{
+    else
+    {
         ShowMsg("Wrong command format!\nUse help command for information.");
     }
 
     return canExit;
 }
 
+// установка нового пароля
+// параметры:
+//      arrayUserInfo - массив пользовательской информации
+// возврат:
+//      результат установки пароля
+//      true - пароль установлен
+//      false - ошибка при установке пароля
+bool SetPassword(string[] arrayUserInfo)
+{
+    bool result = false;
+    string oldPassword, newPassword, confirmPassword;
 
+    oldPassword = InputCommand("Enter old password: ");
+    newPassword = InputCommand("Enter new password: ");
+    confirmPassword = InputCommand("Confirm new password: ");
+
+    if(oldPassword != arrayUserInfo[userPass]){
+        ShowMsg("Password is wrong!");
+    }
+    else if(newPassword != confirmPassword){
+        ShowMsg("Password and confirmation do not match!");
+    }
+    else
+    {
+        arrayUserInfo[userPass] = newPassword;
+        result = true;
+        ShowMsg("Password changed!");
+    }
+
+    return result;
+}
 
 // main body
 string command;         // пользовательский ввод
@@ -130,7 +166,7 @@ while (true)            // работаем бесконечно
     //PrintHelp();
 
     command = InputCommand("> ");
-    if (CommandProcessor(command))
+    if (CommandProcessor(command, userInfo))
     {
         break;
     }
