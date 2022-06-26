@@ -2,7 +2,7 @@
 *  Задача 2
 *  v 0.0 Есть программа с бесконечным циклом. Когда пользователь вводит exit программа заканчивается
 
-*  todo: v 0.1 Продолжаем прокачивать приложение с командами. Добавить к программе, которая заканчивается, 
+*  v 0.1 Продолжаем прокачивать приложение с командами. Добавить к программе, которая заканчивается, 
 *    когда пишем exit еще 4 команды (их можно придумать самому). 
 *    Например: 
 *        SetName – Установить имя 
@@ -14,8 +14,8 @@
 
 
 // индексы в пользовательской информации 
-const int userNamePos = 0;
-const int userPassPos = 1;
+const int positionUserName = 0;
+const int positionUserPass = 1;
 
 // пользовательская информация
 string[] userInfo = { string.Empty, string.Empty };
@@ -32,7 +32,7 @@ string InputCommand(string message)
 }
 
 // сообщениеи для проьзователя
-// параметрыЖ
+// параметры:
 //      message - выводимое сообщение
 void ShowMsg(string message)
 {
@@ -131,7 +131,7 @@ bool AskPassword(string[] arrayUserInfo)
     bool result = false;
 
     string password = InputCommand("Enter password: ");
-    if(arrayUserInfo[userPassPos] == password)
+    if(arrayUserInfo[positionUserPass] == password)
         result = true;
     
     return result;
@@ -147,7 +147,7 @@ void PrintUserName(string[] arrayUserInfo)
 {
     if(AskPassword(arrayUserInfo))
     {
-        ShowMsg($"User name: {arrayUserInfo[userNamePos]}");
+        ShowMsg($"User name: {arrayUserInfo[positionUserName]}");
     }
     else
     {
@@ -171,7 +171,7 @@ bool SetUserName(string[] arrayUserInfo, string newName){
     {
         if(newName == string.Empty)
             newName = InputCommand("New user name:");
-        userInfo[userNamePos] = newName;
+        userInfo[positionUserName] = newName;
         ShowMsg("User name changed.");
         result = true;
     }  
@@ -199,7 +199,7 @@ bool SetPassword(string[] arrayUserInfo)
     newPassword = InputCommand("Enter new password: ");
     confirmPassword = InputCommand("Confirm new password: ");
 
-    if(oldPassword != arrayUserInfo[userPassPos]){
+    if(oldPassword != arrayUserInfo[positionUserPass]){
         ShowMsg("Password is wrong!");
     }
     else if(newPassword != confirmPassword){
@@ -207,7 +207,7 @@ bool SetPassword(string[] arrayUserInfo)
     }
     else
     {
-        arrayUserInfo[userPassPos] = newPassword;
+        arrayUserInfo[positionUserPass] = newPassword;
         result = true;
         ShowMsg("Password changed!");
     }
