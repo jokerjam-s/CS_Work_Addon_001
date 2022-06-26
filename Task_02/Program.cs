@@ -13,12 +13,9 @@
 */
 
 
-// возможные команды
-const string exitWord = "exit";
-
 // индексы в пользовательской информации 
-const int userName = 0;
-const int userPass = 1;
+const int userNamePos = 0;
+const int userPassPos = 1;
 
 // пользовательская информация
 string[] userInfo = { string.Empty, string.Empty };
@@ -40,8 +37,6 @@ string InputCommand(string message)
 void ShowMsg(string message)
 {
     Console.WriteLine(message);
-    Console.WriteLine("Press any key to continue ...");
-    Console.ReadKey();
 }
 
 // вывод справки
@@ -99,17 +94,17 @@ bool CommandProcessor(string userWord, string[] userData)
     }
     else if (command[0] == "get" && command[1] == "name")
     {
-        // todo вызов отображения именни пользователя
+        PrintUserName(userData);
     }
     else if (command[0] == "set" && command[1] == "name")
     {
         if (command.Length > 2)
         {
-            // todo вызов ввода имевни с заданным параметром
+            SetUserName(userData, command[2]);
         }
         else
         {
-            // todo вызов задания имени с запросом параметра
+            SetUserName(userData, string.Empty);
         }
     }
     else if (command[0] == "set" && command[1] == "password")
@@ -123,6 +118,70 @@ bool CommandProcessor(string userWord, string[] userData)
 
     return canExit;
 }
+
+// запрос пароля для проверки
+// параметры:
+//      arrayUserInfo - массив пользовательской информации
+// возврат:
+//      результат проверки запрошенного пароля
+//      true - проль введен вверно
+//      false - пароль введен неверно
+bool AskPassword(string[] arrayUserInfo)
+{
+    bool result = false;
+
+    string password = InputCommand("Enter password: ");
+    if(arrayUserInfo[userPassPos] == password)
+        result = true;
+    
+    return result;
+}
+
+
+// вывод имени пользователя по авторизаци
+// параметры:
+//      arrayUserInfo - массив пользовательской информации
+// возврат:
+//      нет
+void PrintUserName(string[] arrayUserInfo)
+{
+    if(AskPassword(arrayUserInfo))
+    {
+        ShowMsg($"User name: {arrayUserInfo[userNamePos]}");
+    }
+    else
+    {
+        ShowMsg("Wrong password!");
+    }
+}
+
+
+// установить иммя пользователя 
+// параметры:
+//      arrayUserInfo - массив пользовательской информации
+//      newName - новое имя пользователя, если пусто - имя запрашиваетсяя 
+// возврат:
+//      результат установки имени
+//      true - пароль установлен
+//      false - ошибка при установке пароля
+bool SetUserName(string[] arrayUserInfo, string newName){
+    bool result = false;
+
+    if(AskPassword(arrayUserInfo))
+    {
+        if(newName == string.Empty)
+            newName = InputCommand("New user name:");
+        userInfo[userNamePos] = newName;
+        ShowMsg("User name changed.");
+        result = true;
+    }  
+    else{
+        ShowMsg("Wrong password!");
+    }
+
+    return result;
+}
+
 
 // установка нового пароля
 // параметры:
@@ -140,7 +199,7 @@ bool SetPassword(string[] arrayUserInfo)
     newPassword = InputCommand("Enter new password: ");
     confirmPassword = InputCommand("Confirm new password: ");
 
-    if(oldPassword != arrayUserInfo[userPass]){
+    if(oldPassword != arrayUserInfo[userPassPos]){
         ShowMsg("Password is wrong!");
     }
     else if(newPassword != confirmPassword){
@@ -148,7 +207,7 @@ bool SetPassword(string[] arrayUserInfo)
     }
     else
     {
-        arrayUserInfo[userPass] = newPassword;
+        arrayUserInfo[userPassPos] = newPassword;
         result = true;
         ShowMsg("Password changed!");
     }
@@ -163,8 +222,6 @@ Console.Clear();
 
 while (true)            // работаем бесконечно
 {
-    //PrintHelp();
-
     command = InputCommand("> ");
     if (CommandProcessor(command, userInfo))
     {
